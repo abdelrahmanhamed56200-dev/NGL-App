@@ -35,7 +35,7 @@ const userSchema = new Schema(
             enum:['male','female'],
             default: 'male'
         }},{
-        timestamp: {
+        timestamps: {
             createdAt:true,
             updatedAt:true
         }

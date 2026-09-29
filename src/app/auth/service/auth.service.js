@@ -8,6 +8,7 @@ import { invalidCode, invalidPassword, otpExpired } from '../errors.js';
 import { userAlreadyExist, userAlreadyVerified, userNotExist, userNotVerified } from '../../user/errors.js';
 import { generateToken } from '../utils/token.js';
 import {  comparePassword, hashPassword } from '../utils/hash.js';
+import { verifyGoogleToken } from '../../../common/utils/google-auth.js';
 
 
 
@@ -70,4 +71,37 @@ await otpRepository.createOTP({
 await sendEmail(email,'new otp', `<p>your new otp is ${code}</p>`);
 
 
+}
+
+
+export async function resetPassword(email,code,newPassword){
+    const otp = await otpRepository.getOtpByEmail(email);
+    if(!otp) throw otpExpired;
+    if(otp.code !== code) throw invalidCode;
+    const hashedPassword = await hashPassword(newPassword);
+    userRepository.updateUserByEmail(email,{passwoed:hashedPassword});
+    otpRepository.deleteOTPsByEmail(email);
+}
+
+
+export async function loginWithGoogle(idToken) {
+const payload = await verifyGoogleToken(idToken);
+const user = await authRepository.checkUserExistByEmail(payload.email);
+if (user){
+    return generateToken({
+        id: user._id,
+        email: user.email,
+    });
+}
+const createdUser = await authRepository.createUser({
+    name:payload.name,
+    email:payload.email,
+    provider:'google',
+    isVerified: true
+
+});
+return generateToken({
+    id:createdUser._id,
+    email:createdUser.email,
+})
 }
