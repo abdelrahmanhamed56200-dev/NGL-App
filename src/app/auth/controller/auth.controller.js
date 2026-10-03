@@ -1,5 +1,5 @@
-import { toMs } from "../../../common/utils/time.js";
-import { validateBody } from "../../../common/validation/validation.js";
+import { toMs } from "../../../pkg/utils/time.js";
+import { validateBody } from "../../../lib/validation/validation.js";
 import { loginDTO, registerDTO, resetPasswordDTO, sendOtpDTO, verifyAccountDTO } from "../dto/auth.dto.js";
 import * as authService from "../service/auth.service.js";
 
