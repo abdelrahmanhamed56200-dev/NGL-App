@@ -2,13 +2,14 @@ import * as authRepository from '../repository/auth.repository.js';
 import * as otpRepository from '../repository/otp.repository.js';
 import * as userRepository from '../../user/repository/user.repository.js'
 import {generateOTPCode} from "../../../lib/utils/otp.js";
-import {sendEmail} from "../../../lib/email/nodemailer.js";
 import { toMs } from '../../../pkg/utils/time.js';
 import { invalidCode, invalidPassword, otpExpired } from '../errors.js';
 import { userAlreadyExist, userAlreadyVerified, userNotExist, userNotVerified } from '../../user/errors.js';
 import { generateToken } from '../utils/token.js';
 import {  comparePassword, hashPassword } from '../utils/hash.js';
 import { verifyGoogleToken } from '../../../lib/utils/google-auth.js';
+import { mailjetProvider } from '../../../lib/email/init.js';
+import { sendEmail } from '../../../lib/email/nodemailer.js';
 
 
 
@@ -79,7 +80,7 @@ export async function resetPassword(email,code,newPassword){
     if(!otp) throw otpExpired;
     if(otp.code !== code) throw invalidCode;
     const hashedPassword = await hashPassword(newPassword);
-    userRepository.updateUserByEmail(email,{passwoed:hashedPassword});
+    userRepository.updateUserByEmail(email,{password:hashedPassword});
     otpRepository.deleteOTPsByEmail(email);
 }
 

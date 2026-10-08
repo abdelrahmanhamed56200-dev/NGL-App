@@ -1,3 +1,5 @@
+import Redis from "ioredis";
+
 export class RedisCacheProvider {
     client;
  constructor(config) {

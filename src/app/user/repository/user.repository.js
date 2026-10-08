@@ -8,6 +8,8 @@ export async function updateUserByEmail(email,updatedData) {
     )
 }
 
-
+export async function findUserById(id) {
+    return User.findOne({_id:id,isDeleted:false},{password:0})
+}
 
 

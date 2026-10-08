@@ -12,6 +12,10 @@ const schema = z.object({
     REDIS_PORT: z.string().default('6379'),
     REDIS_HOST: z.string(),
     REDIS_PASSWORD: z.string(),
+    MAILJET_API_KEY:z.string().trim(),
+    MAILJET_SECRET_KEY:z.string().trim(),
+    MAILJET_FROM_EMAIL:z.string(),
+    MAILJET_FROM_NAME:z.string(),
 });
 const parsed = schema.parse(process.env);
 export const env = {
@@ -33,6 +37,12 @@ export const env = {
     },
     jwt: {
         secret: parsed.JWT_SECRET,
+    },
+    mailjet:{
+        apiKey:parsed.MAILJET_API_KEY,
+        apiSecret: parsed.MAILJET_SECRET_KEY,
+        fromEmail: parsed.MAILJET_FROM_EMAIL,
+        fromName: parsed.MAILJET_FROM_NAME,
     },
     payment: {},
     aws: {},
